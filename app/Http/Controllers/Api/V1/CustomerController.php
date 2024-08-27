@@ -15,13 +15,14 @@ class CustomerController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
+    public function index(Request $request): CustomerCollection {
         $filter = new CustomerFilter();
-        $queryItems = $filter->transform($request); // [['column', 'operator', 'value']]
-        if(count($queryItems) == 0) {
-            return new CustomerCollection(Customer::paginate());
+        $filterItems = $filter->transform($request);
+        $includeInvoices = $request->query('includeInvoices');
+        $customers = Customer::where($filterItems);
+        if($includeInvoices) {
+            $customers = $customers->with('invoices')->paginate();
         }
-        $customers = Customer::where($queryItems)->paginate();
         return new CustomerCollection($customers->appends($request->query()));
     }
 
@@ -42,7 +43,11 @@ class CustomerController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Customer $customer) {
+    public function show(Customer $customer): CustomerResource {
+        $includeInvoices = request()->query('includeInvoices');
+        if($includeInvoices) {
+            return new CustomerResource($customer->loadMissing('invoices'));
+        }
         return new CustomerResource($customer);
     }
 

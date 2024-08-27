@@ -17,7 +17,7 @@ class InvoiceController extends Controller {
      */
     public function index(Request $request) {
         $filter = new InvoiceFilter();
-        $queryItems = $filter->transform($request); // [['column', 'operator', 'value']]
+        $queryItems = $filter->transform($request);
         if(count($queryItems) == 0) {
             return new InvoiceCollection(Invoice::paginate());
         }
