@@ -12,7 +12,8 @@ class UpdateCustomerRequest extends FormRequest {
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool {
-        return true;
+        $user = $this->user();
+        return $user != null && $user->tokenCan('update');
     }
 
     /**
