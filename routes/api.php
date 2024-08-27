@@ -9,7 +9,7 @@ Route::get('/user', function(Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::prefix('v1')->namespace('App\Http\Controllers\Api\V1')->group(function() {
+Route::middleware('auth:sanctum')->prefix('v1')->namespace('App\Http\Controllers\Api\V1')->group(function() {
     Route::apiResource('customers', CustomerController::class);
     Route::apiResource('invoices', InvoiceController::class);
     Route::post('invoices/bulk/store', [InvoiceController::class, 'bulkStore']);
